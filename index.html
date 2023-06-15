@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jogo de Perguntas e Respostas</title>
+    <style type="text/css">
+        body {
+            background-image: url(imagens/fragezeichenzeichen-auf-leuchtendem-digitalem-stilhintergrund_1017-23982.webp);
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        position: center center;
+    }
+
+    h1 {
+        text-align: center ;
+        color: #fff;
+    }
+
+    .btn {
+        display: block;
+        width: 50%;
+        margin: 10px auto;
+        padding: 10px;
+        background-color: #3A8EBA;
+        color: #fff;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 100px;
+        font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        font-size: 16px;
+    }
+
+    .btn:hover {
+        background-color: #2F5F81;
+    }
+
+    .question {
+        margin-top: 70px;
+        text-align: center;
+        color: #fff ;
+        font-size: 30px;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        font-style: italic;
+    }
+
+    .options {
+        display:flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        margin-top: 30px;
+        
+    }
+
+    .option {
+        width: 45%;
+        padding: 10px;
+        background-color:cyan;
+        border: 2px solid #000;
+        border-radius: 100px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: medium;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        
+    }
+
+    .option:hover {
+        background-color: #e3e3e3;
+    }
+
+    .next {
+        display: block;
+        width: 100%;
+        margin: 50px auto 0;
+        padding: 10px;
+        background-color: #3A8EBA;
+        color:#000;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 100px;
+        cursor: pointer;
+       font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif ;
+       font-size: larger;
+        pointer-events: none;
+        transition: all 0.3s;
+    }
+
+    .next:hover {
+        background-color: #2F5F81;
+    }
+
+    .fim {
+        margin-top: 50px;
+        text-align: center;
+        font-size: larger;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        color: #fff;
+    }
+
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Jogo de Perguntas e Respostas</h1>
+        <button class="btn" id="start-btn">INICIAR JOGO</button>
+        <div id="game" style="display: none;">
+            <div class="question" id="question"></div>
+            <div class="options">
+                <button class="option" id="btn0"></button><br>
+                <button class="option" id="btn1"></button><br>
+                <button class="option" id="btn2"></button><br>
+                <button class="option" id="btn3"></button><br>
+            </div>
+            <button class="next" id="next-btn">PRÓXIMO</button>
+            <div class="fim" id="fim" style="display: none;">Parabéns! Fim de Jogo!</div>
+        </div>
+    </div>
+
+<script type="text/javascript">
+    const questions = [
+        {
+            question: "1º Qual a capital da Itália?",
+            options: ["Roma", "Paris", "Madri", "Pequim"],
+            answer: 0
+        },
+        {
+            question: "2º Qual a cor da bandeira do Brasil?",
+            options: ["Azul", "Vermelho", "Verde", "Amarelo"],
+            answer: 3
+        },
+        {
+            question: "3º Quem pintou a Mona Lisa?",
+            options: ["Vincent van Gogh", "Leonardo da Vinci", "Pablo Picasso", "Michelangelo"],
+            answer: 1
+        },
+        {
+            question: "4º Qual a principal função do coração?",
+            options: ["Pensar", "Respirar", "Bombear sangue", "Digitar"],
+            answer: 2
+        },
+        {
+            question: "5º Quantas patas um cachorro tem?",
+            options: ["2", "3", "4", "5"],
+            answer: 2
+        }
+    ];
+
+    const startBtn = document.getElementById("start-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const questionDiv = document.getElementById("question");
+    const optionsBtn = document.getElementsByClassName("option");
+    const fimDiv = document.getElementById("fim");
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    // Função para mostrar a próxima questão
+    function showQuestion(questionObj) {
+        questionDiv.innerText = questionObj.question;
+        for (let i = 0; i < questionObj.options.length; i++) {
+            optionsBtn[i].innerText = questionObj.options[i];
+            optionsBtn[i].addEventListener("click", function() {
+                checkAnswer(this, questionObj.answer);
+            });
+        }
+    }
+
+    // Função para verificar se a resposta está correta
+    function checkAnswer(btn, correctAnswer) {
+        if (btn.innerText == questions[currentQuestion].options[correctAnswer]) {
+            score++;
+        }
+        for (let i = 0; i < optionsBtn.length; i++) {
+            optionsBtn[i].removeEventListener("click", function() {});
+        }
+        nextBtn.style.opacity = 1;
+        nextBtn.style.pointerEvents = "auto";
+        for (let i = 0; i < optionsBtn.length; i++) {
+            if (optionsBtn[i].innerText == questions[currentQuestion].options[correctAnswer]) {
+                optionsBtn[i].style.backgroundColor = "#00cc00";
+            } else {
+                optionsBtn[i].style.backgroundColor = "#ff0000";
+            }
+        }
+    }
+
+    // Função para mostrar o resultado final do jogo
+    function showResult() {
+        questionDiv.style.display = "none";
+        nextBtn.style.display = "none";
+        fimDiv.style.display = "block";
+        if (score == 0) {
+            fimDiv.innerText = "Que pena! Você não acertou nenhuma pergunta!";
+        } else if (score <= questions.length / 2) {
+            fimDiv.innerText = "Parabéns! Você acertou " + score + " de " + questions.length + " perguntas!";
+        } else {
+            fimDiv.innerText = "Incrível! Você acertou " + score + " de " + questions.length + " perguntas!";
+        }
+    }
+
+    // Adiciona evento ao botão iniciar jogo
+    startBtn.addEventListener("click", function() {
+        startBtn.style.display = "none";
+        document.getElementById("game").style.display = "block";
+        showQuestion(questions[currentQuestion]);
+    });
+
+    // Adiciona evento ao botão próxima
+    nextBtn.addEventListener("click", function() {
+        currentQuestion++;
+        if (currentQuestion == questions.length - 1) {
+            nextBtn.innerText = "Finalizar";
+        }
+        if (currentQuestion < questions.length) {
+            showQuestion(questions[currentQuestion]);
+            nextBtn.style.opacity = 0.5;
+            nextBtn.style.pointerEvents = "none";
+            for (let i = 0; i < optionsBtn.length; i++) {
+                optionsBtn[i].style.backgroundColor = "#f7f7f7";
+            }
+        } else {
+            showResult();
+        }
+    });
+</script>
+</body>
+</html>
